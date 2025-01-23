@@ -62,7 +62,7 @@ class Text extends Model
     }
 
     // Связь со статистикой
-    public function statistic()
+    public function statistics()
     {
         return $this->hasOne(Statistic::class);
     }

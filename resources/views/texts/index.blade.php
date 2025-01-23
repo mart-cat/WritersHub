@@ -7,11 +7,11 @@
     <h1>Все тексты</h1>
     <div class="text-list">
         @foreach ($texts as $text)
-            @include('components.text-card', ['text' => $text])
+            @include('components.textСard', ['text' => $text])
         @endforeach
     </div>
 
     {{-- Пагинация --}}
     @include('components.pagination', ['paginator' => $texts])
 </div>
-@endsection
+@endsectionc

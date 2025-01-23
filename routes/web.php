@@ -47,10 +47,15 @@ Route::middleware('auth')->group(function () {
     // Избранное
     Route::post('/texts/{id}/favorite', [FavoriteController::class, 'store'])->name('favorites.store'); // Добавить в избранное
     Route::delete('/texts/{id}/favorite', [FavoriteController::class, 'destroy'])->name('favorites.destroy'); // Убрать из избранного
+    Route::delete('/texts/{id}/toggle', [FavoriteController::class, 'destroy'])->name('favorites.toggle');
 
     // Подписки
     Route::post('/authors/{id}/subscribe', [SubscriptionController::class, 'store'])->name('subscriptions.store'); // Подписаться на автора
     Route::delete('/authors/{id}/unsubscribe', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy'); // Отписаться от автора
+
+    // Рейтинг
+    Route::post('/authors/{id}/ratings', [SubscriptionController::class, 'store'])->name('ratings.store'); // Подписаться на автора
+    Route::delete('/authors/{id}/unratings', [SubscriptionController::class, 'destroy'])->name('ratings.destroy'); // Отписаться от автора
 });
 
 // === Маршруты для администраторов ===
