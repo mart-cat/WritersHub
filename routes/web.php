@@ -19,7 +19,8 @@ Route::get('/texts/{id}', [TextController::class, 'show'])->name('texts.show'); 
 
 // === Маршруты для авторизации ===
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login/ajax', [AuthController::class, 'login'])->name('login.ajax');
+Route::post('/verify-2fa', [AuthController::class, 'verifyTwoFactorAjax'])->name('2fa.verify.ajax');
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
