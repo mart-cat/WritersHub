@@ -35,20 +35,20 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/{id}/update', [UserController::class, 'update'])->name('user.profile.update'); // Редактирование профиля
 
     // Управление текстами
-    Route::get('/texts/create', [TextController::class, 'create'])->name('texts.create'); // Создание текста
-    Route::post('/texts', [TextController::class, 'store'])->name('texts.store'); // Сохранение текста
-    Route::get('/texts/{id}/edit', [TextController::class, 'edit'])->name('texts.edit'); // Редактирование текста
-    Route::put('/texts/{id}', [TextController::class, 'update'])->name('texts.update'); // Обновление текста
-    Route::delete('/texts/{id}', [TextController::class, 'destroy'])->name('texts.destroy'); // Удаление текста
+    Route::post('/text/save', [TextController::class, 'store'])->name('texts.store'); // Сохранение текста
+    Route::get('/text/create', [TextController::class, 'create'])->name('texts.create'); // Создание текста
+    Route::get('/text/{id}/edit', [TextController::class, 'edit'])->name('texts.edit'); // Редактирование текста
+    Route::put('/text/{id}', [TextController::class, 'update'])->name('texts.update'); // Обновление текста
+    Route::delete('/text/{id}', [TextController::class, 'destroy'])->name('texts.destroy'); // Удаление текста
 
     // Комментарии
-    Route::post('/texts/{id}/comments', [CommentController::class, 'store'])->name('comments.store'); // Добавление комментария
+    Route::post('/text/{id}/comments', [CommentController::class, 'store'])->name('comments.store'); // Добавление комментария
     Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy'); // Удаление комментария
 
     // Избранное
-    Route::post('/texts/{id}/favorite', [FavoriteController::class, 'store'])->name('favorites.store'); // Добавить в избранное
-    Route::delete('/texts/{id}/favorite', [FavoriteController::class, 'destroy'])->name('favorites.destroy'); // Убрать из избранного
-    Route::delete('/texts/{id}/toggle', [FavoriteController::class, 'destroy'])->name('favorites.toggle');
+    Route::post('/text/{id}/favorite', [FavoriteController::class, 'store'])->name('favorites.store'); // Добавить в избранное
+    Route::delete('/text/{id}/favorite', [FavoriteController::class, 'destroy'])->name('favorites.destroy'); // Убрать из избранного
+    Route::delete('/text/{id}/toggle', [FavoriteController::class, 'destroy'])->name('favorites.toggle');
 
     // Подписки
     Route::post('/authors/{id}/subscribe', [SubscriptionController::class, 'store'])->name('subscriptions.store'); // Подписаться на автора
@@ -59,14 +59,22 @@ Route::middleware('auth')->group(function () {
     Route::delete('/authors/{id}/unratings', [SubscriptionController::class, 'destroy'])->name('ratings.destroy'); // Отписаться от автора
 });
 
-// === Маршруты для администраторов ===
-Route::middleware(['auth', 'admin'])->group(function () {
-    // Админ панель
-    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard'); // Главная страница админки
-    Route::get('/admin/users', [AdminController::class, 'manageUsers'])->name('admin.users'); // Управление пользователями
-    Route::get('/admin/texts', [AdminController::class, 'manageTexts'])->name('admin.texts'); // Управление текстами
+// === Маршруты Временно убраны мидлвар ==
 
-    // Удаление и модерация
-    Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete'); // Удаление пользователя
-    Route::put('/admin/texts/{id}/moderate', [AdminController::class, 'moderateText'])->name('admin.texts.moderate'); // Модерация текста
-});
+//Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Управление пользователями
+    Route::get('/users', [AdminController::class, 'manageUsers'])->name('admin.users');
+    Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+
+    // Управление категориями
+    Route::get('/categories', [AdminController::class, 'manageCategories'])->name('admin.categories');
+    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('admin.categories.store');
+    Route::delete('/categories/{id}', [AdminController::class, 'deleteCategory'])->name('admin.categories.delete');
+
+    // Управление жанрами
+    Route::get('/genres', [AdminController::class, 'manageGenres'])->name('admin.genres');
+    Route::post('/genres', [AdminController::class, 'storeGenre'])->name('admin.genres.store');
+    Route::delete('/genres/{id}', [AdminController::class, 'deleteGenre'])->name('admin.genres.delete');
+//});

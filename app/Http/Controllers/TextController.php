@@ -50,24 +50,52 @@ class TextController extends Controller
 
     // Сохранение нового текста
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'content' => 'required|string',
-            'genre_id' => 'required|exists:genres,id',
-            'category_id' => 'required|exists:categories,id',
-            'size' => 'required|in:mini,standard,maxi',
-        ]);
+{
+    $request->merge(['user_id' => auth()->id()]);
 
-        $text = new Text($request->all());
-        $text->user_id = auth()->id(); // Связываем текст с текущим пользователем
-        $text->char_count = strlen($request->content);
-        $text->chapter_count = substr_count($request->content, '###'); // Считаем главы через разделитель
-        $text->save();
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string|max:1000',
+        'content' => 'required',
+        'genre_id' => 'required|exists:genres,id',
+        'category_id' => 'required|exists:categories,id',
+        'tags' => 'nullable|string',
+        'status' => 'required|string',
+        'size' => 'required|string',
+        'char_count' => 'nullable|integer',
+        'chapter_count' => 'nullable|integer',
+        'warnings' => 'nullable|string',
+        'age_rating' => 'required|string',
+        'dedication' => 'nullable|string',
+        'publication_permission' => 'required|string',
 
-        return redirect()->route('texts.show', $text->id)->with('success', 'Текст успешно создан!');
-    }
+    ]);
+
+    
+    // Преобразуем строку в JSON-массив
+    $tags = $request->tags ? json_encode(explode(',', $request->tags)) : json_encode([]);
+
+    $text = new Text();
+    $text->title = $request->title;
+    $text->description = $request->description;
+    $text->content = $request->content;
+    $text->genre_id = $request->genre_id;
+    $text->category_id = $request->category_id;
+    $text->tags = $tags; // Тут уже JSON
+    $text->status = $request->status;
+    $text->size = $request->size;
+    $text->char_count = $request->char_count;
+    $text->chapter_count = $request->chapter_count;
+    $text->warnings = $request->warnings;
+    $text->age_rating = $request->age_rating;
+    $text->dedication = $request->dedication;
+    $text->publication_permission = $request->publication_permission;
+    $text->user_id = $request->user_id;
+    $text->save();
+
+    return redirect()->route('texts.index')->with('success', 'Текст успешно сохранён!');
+}
+
 
     // Страница редактирования текста
     public function edit($id)

@@ -6,7 +6,7 @@
 
     <div id="error-message" class="alert alert-danger d-none"></div>
 
-    <form id="login-form">
+    <form id="login-form" class="card">
         @csrf
         <div class="form-group">
             <label for="email">Email:</label>
@@ -20,7 +20,7 @@
     </form>
 
     <!-- Блок 2FA (изначально скрыт) -->
-    <div id="two-factor-section" class="d-none">
+    <div id="two-factor-section" class="card d-none">
         <h3>Введите код подтверждения</h3>
         <form id="two-factor-form">
             @csrf
