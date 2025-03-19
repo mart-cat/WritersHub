@@ -180,3 +180,7 @@ input:focus, select:focus, textarea:focus {
 .reply-form {
     display: none;
 }
+
+.d-none{
+    display: none;
+}

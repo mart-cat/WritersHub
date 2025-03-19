@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     // Управление текстами
     Route::post('/text/save', [TextController::class, 'store'])->name('texts.store'); // Сохранение текста
     Route::get('/text/create', [TextController::class, 'create'])->name('texts.create'); // Создание текста
+    Route::post('/parse-file', [TextController::class, 'parseFile'])->name('texts.parseFile'); // Парсинг текста
     Route::get('/text/{id}/edit', [TextController::class, 'edit'])->name('texts.edit'); // Редактирование текста
     Route::put('/text/{id}', [TextController::class, 'update'])->name('texts.update'); // Обновление текста
     Route::delete('/text/{id}', [TextController::class, 'destroy'])->name('texts.destroy'); // Удаление текста
@@ -48,7 +49,7 @@ Route::middleware('auth')->group(function () {
     // Избранное
     Route::post('/text/{id}/favorite', [FavoriteController::class, 'store'])->name('favorites.store'); // Добавить в избранное
     Route::delete('/text/{id}/favorite', [FavoriteController::class, 'destroy'])->name('favorites.destroy'); // Убрать из избранного
-    Route::delete('/text/{id}/toggle', [FavoriteController::class, 'destroy'])->name('favorites.toggle');
+    Route::delete('/text/{id}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle'); // Переключатель избранное
 
     // Подписки
     Route::post('/authors/{id}/subscribe', [SubscriptionController::class, 'store'])->name('subscriptions.store'); // Подписаться на автора

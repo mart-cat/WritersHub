@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Text;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Genre;
-use App\Models\Text;
-use Illuminate\Http\Request;
 
 class TextController extends Controller
 {
@@ -33,10 +33,10 @@ class TextController extends Controller
     {
         $text = Text::with(['user', 'genre', 'category', 'statistics'])->findOrFail($id);
         $comments = Comment::with(['user', 'replies.user', 'parent.user'])
-    ->where('text_id', $text->id) // Фильтр по text_id
-    ->whereNull('parent_id') // Только корневые комментарии
-    ->orderBy('created_at', 'asc')
-    ->get();
+            ->where('text_id', $text->id) // Фильтр по text_id
+            ->whereNull('parent_id') // Только корневые комментарии
+            ->orderBy('created_at', 'asc')
+            ->get();
 
         $isFavorite = auth()->check()
             ? auth()->user()->favorites()->where('text_id', $id)->exists()
@@ -53,15 +53,15 @@ class TextController extends Controller
         return view('texts.create', compact('genres', 'categories'));
     }
 
-    // Сохранение нового текста
     public function store(Request $request)
     {
+
         $request->merge(['user_id' => auth()->id()]);
 
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
-            'content' => 'required',
+            'content' => 'nullable|string',
             'genre_id' => 'required|exists:genres,id',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|string',
@@ -73,20 +73,26 @@ class TextController extends Controller
             'age_rating' => 'required|string',
             'dedication' => 'nullable|string',
             'publication_permission' => 'required|string',
-
+            'text_file' => 'nullable|file|mimes:txt', // Ограничиваем только текстовыми файлами
         ]);
 
+        $content = $request->input('content', ''); // Используем пустую строку по умолчанию
 
-        // Преобразуем строку в JSON-массив
+        if ($request->hasFile('text_file')) {
+            $file = $request->file('text_file');
+            $fileContent = file_get_contents($file->getRealPath());
+            $content .= "\n\n" . $fileContent;
+        }
+
         $tags = $request->tags ? json_encode(explode(',', $request->tags)) : json_encode([]);
 
         $text = new Text();
         $text->title = $request->title;
         $text->description = $request->description;
-        $text->content = $request->content;
+        $text->content = $content;
         $text->genre_id = $request->genre_id;
         $text->category_id = $request->category_id;
-        $text->tags = $tags; // Тут уже JSON
+        $text->tags = $tags;
         $text->status = $request->status;
         $text->size = $request->size;
         $text->char_count = $request->char_count;
@@ -140,5 +146,10 @@ class TextController extends Controller
         $text->delete();
 
         return redirect()->route('texts.index')->with('success', 'Текст успешно удален!');
+    }
+
+    public function parseFile(Request $request): JsonResponse
+    {
+
     }
 }
