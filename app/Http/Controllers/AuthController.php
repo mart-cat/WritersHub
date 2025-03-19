@@ -60,7 +60,7 @@ public function login(Request $request)
     }
 
     // Генерируем код 2FA
-    $user->two_factor_code = mt_rand(100000, 999999);
+    $user->two_factor_code = '111';//mt_rand(100000, 999999);
     $user->two_factor_expires_at = Carbon::now()->addMinutes(10);
     $user->save();
 

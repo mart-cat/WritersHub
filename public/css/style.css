@@ -167,3 +167,16 @@ input:focus, select:focus, textarea:focus {
     font-size: 16px;
     color: #555;
 }
+
+
+/* Смещаем ответы на комментарии */
+.comment-reply {
+    margin-left: 40px; /* смещение вправо */
+}
+.comment-reply-more {
+    margin-left: 60px; /* смещение вправо */
+}
+
+.reply-form {
+    display: none;
+}
