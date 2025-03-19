@@ -22,7 +22,7 @@
                 <select name="genre">
                     <option value="">Выберите жанр</option>
                     @foreach(App\Models\Genre::all() as $genre)
-                        <option value="{{ $genre->id }}">{{ $genre->name }}</option>
+                        <option value="{{ $genre->id }}" {{ request('genre') == $genre->id ? 'selected' : '' }}>{{ $genre->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -30,7 +30,7 @@
                 <select name="category">
                     <option value="">Выберите категорию</option>
                     @foreach(App\Models\Category::all() as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -49,7 +49,16 @@
                         <p>{{ $text->short_description }}</p>
                         <p class="text-muted">
                             <small>Автор: <a href="{{ route('user.profile', $text->user->id) }}">{{ $text->user->name }}</a></small><br>
-                            <small>Жанр: {{ $text->genre->name }}</small>
+                            <small>Жанры: 
+                                @foreach($text->genres as $genre)
+                                    <span>{{ $genre->name }}</span>@if(!$loop->last), @endif
+                                @endforeach
+                            </small><br>
+                            <small>Категории: 
+                                @foreach($text->categories as $category)
+                                    <span>{{ $category->name }}</span>@if(!$loop->last), @endif
+                                @endforeach
+                            </small>
                         </p>
                         <a href="{{ route('texts.show', $text->id) }}" class="btn btn-outline">Читать</a>
                     </div>

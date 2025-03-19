@@ -7,22 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Text extends Model
 {
     protected $fillable = [
-        'user_id',
-        'title',
-        'description',
-        'content',
-        'genre_id',
-        'category_id',
-        'tags',
-        'status',
-        'size',
-        'char_count',
-        'chapter_count',
-        'warnings',
-        'age_rating',
-        'dedication',
-        'publication_permission',
-        'last_updated',
+        'user_id', 'title', 'description', 'tags', 'status', 'size',
+        'warnings', 'age_rating', 'dedication', 'publication_permission'
     ];
 
     // Связь с пользователем (автор текста)
@@ -31,16 +17,18 @@ class Text extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Связь с жанром
-    public function genre()
+    protected $casts = [
+        'tags' => 'array',
+    ];
+
+    public function genres()
     {
-        return $this->belongsTo(Genre::class);
+        return $this->belongsToMany(Genre::class, 'genre_text');
     }
 
-    // Связь с категорией
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_text');
     }
 
     // Связь с комментариями

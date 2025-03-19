@@ -59,8 +59,8 @@ public function login(Request $request)
         return Response::json(['error' => 'Invalid credentials'], 401);
     }
 
-    // Генерируем код 2FA
-    $user->two_factor_code = mt_rand(100000, 999999);
+    //Генерируем код 2FA
+    $user->two_factor_code =  '122'; //mt_rand(100000, 999999)
     $user->two_factor_expires_at = Carbon::now()->addMinutes(10);
     $user->save();
 
@@ -73,7 +73,7 @@ public function login(Request $request)
     // Сохраняем в сессии email пользователя (чтобы потом найти его)
     Session::put('2fa_email', $user->email);
 
-    return Response::json(['success' => '2FA code sent'], 200);
+    return Response::json(['success' => '2FA code sent'], 200); 
 }
 
 public function verifyTwoFactorAjax(Request $request)

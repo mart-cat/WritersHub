@@ -9,10 +9,18 @@
         <h1>{{ $text->title }}</h1>
         <p class="text-muted">
             <small>Автор: <a href="{{ route('user.profile', $text->user->id) }}">{{ $text->user->name }}</a></small> |
-            <small>Жанр: {{ $text->genre->name }}</small> |
-            <small>Категория: {{ $text->category->name }}</small> |
+            <small>Жанры: 
+                @foreach($text->genres as $genre)
+                    <span>{{ $genre->name }}</span>@if(!$loop->last), @endif
+                @endforeach
+            </small> |
+            <small>Категории: 
+                @foreach($text->categories as $category)
+                    <span>{{ $category->name }}</span>@if(!$loop->last), @endif
+                @endforeach
+            </small> |
             <small>Статус: {{ $text->status }}</small> |
-            <small>Последнее обновление: {{ $text->last_updated }}</small>
+            <small>Последнее обновление: {{ $text->updated_at->format('d.m.Y H:i') }}</small>
         </p>
     </div>
 
@@ -37,23 +45,6 @@
 
     <!-- Интерактивные элементы -->
     <div class="mb-4 d-flex justify-content-between">
-        <!-- Рейтинг 
-        <div>
-            <h5>Рейтинг: {{ number_format($text->statistics, 1) }} / 5</h5>
-            @auth
-                <form action="{{ route('ratings.store', $text->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    <select name="rating" class="form-select d-inline w-auto" required>
-                        <option value="" disabled selected>Оценить</option>
-                        @for ($i = 1; $i <= 5; $i++)
-                            <option value="{{ $i }}">{{ $i }}</option>
-                        @endfor
-                    </select>
-                    <button type="submit" class="btn btn-primary btn-sm">Отправить</button>
-                </form>
-            @endauth
-        </div>
-        -->
         <!-- Добавить в избранное -->
         @auth
             <form action="{{ route('favorites.toggle', $text->id) }}" method="POST">
@@ -67,7 +58,7 @@
 
     <!-- Комментарии -->
     <div class="mt-5">
-        <h4>Комментарии ({{ $text->statistics}})</h4>
+        <h4>Комментарии ({{ $text->comments->count() }})</h4>
         @auth
             <form action="{{ route('comments.store', $text->id) }}" method="POST" class="mb-4">
                 @csrf

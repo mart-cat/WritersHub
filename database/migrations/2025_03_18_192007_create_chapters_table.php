@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->unsignedInteger('texts_count')->default(0); // Добавлен счетчик текстов
-            $table->timestamps();
+        Schema::create('chapters', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('text_id')->constrained('texts')->onDelete('cascade');
+        $table->string('title');
+        $table->longText('content');
+        $table->integer('char_count');
+        $table->timestamps();
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('chapters');
     }
 };

@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('genres', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->timestamps();
+        $table->id();
+        $table->string('name');
+        $table->unsignedInteger('texts_count')->default(0); // Добавлен счетчик текстов
+        $table->timestamps();
         });
     }
 
