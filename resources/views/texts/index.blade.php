@@ -8,9 +8,9 @@
     
     <div class="text-list">
         @foreach ($texts as $text)
-            <div class="card mb-4">
+            
                 @include('components.textCard', ['text' => $text])
-            </div>
+            
         @endforeach
     </div>
 

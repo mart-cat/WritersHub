@@ -23,31 +23,32 @@ class UserController extends Controller
         return view('user.profile', compact('user'));
     }
 
-    // Обновление профиля
-    public function update(Request $request, $id)
+    // Метод для обновления основных данных пользователя
+    public function update(Request $request)
     {
-        $user = User::findOrFail($id);
+        $user = Auth::user();
 
-        // Проверка, что пользователь редактирует свой профиль
-        if (Auth::id() !== $user->id) {
-            return redirect()->back()->with('error', 'Вы не можете редактировать этот профиль.');
-        }
-
+        // Валидация данных
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$user->id,
-            'password' => 'nullable|min:6|confirmed',
+            'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
 
+        // Обновление данных пользователя
         $user->name = $request->name;
         $user->email = $request->email;
-
-        if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);
-        }
-
         $user->save();
 
-        return redirect()->route('user.profile', $user->id)->with('success', 'Профиль успешно обновлен.');
+        // Редирект на профиль с передачей ID
+        return redirect()->route('user.profile.edit', ['id' => $user->id])->with('success', 'Профиль обновлен');
     }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('user.edit', compact('user'));
+        
+    }
+
+
 }

@@ -22,7 +22,20 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'blocked_until',
+        'is_blocked'
     ];
+    
+    public function texts()
+    {
+        return $this->hasMany(Text::class);
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

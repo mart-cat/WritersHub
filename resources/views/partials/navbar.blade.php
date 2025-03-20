@@ -15,9 +15,13 @@
             @else
                 <li class="nav-item"><a href="{{ route('texts.index') }}" class="nav-link">Все тексты</a></li>
                 <li class="nav-item"><a href="{{ route('user.dashboard') }}" class="nav-link">Личный кабинет</a></li>
+                
                 @if (auth()->user()->role === 'admin')
-                    <li class="nav-item"><a href="{{ route('admin.dashboard') }}" class="nav-link">Админка</a></li>
+                    <li class="nav-item"><a href="{{ route('admin.dashboard') }}" class="nav-link">Панель управления</a></li>
+                @elseif (auth()->user()->role === 'editor')
+                    <li class="nav-item"><a href="{{ route('editor.dashboard') }}" class="nav-link">Рабочее пространство</a></li>
                 @endif
+
                 <li class="nav-item">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

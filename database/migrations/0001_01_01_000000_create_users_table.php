@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['user', 'admin'])->default('user');
+            $table->enum('role', ['user', 'admin','editor' ])->default('user');
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('is_blocked')->default(false); // для постоянной блокировки
+            $table->timestamp('blocked_until')->nullable(); // для временной блокировки
             $table->rememberToken(); // Добавляем столбец remember_token
             $table->timestamps();
         });

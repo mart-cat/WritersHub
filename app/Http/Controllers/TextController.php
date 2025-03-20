@@ -37,12 +37,17 @@ class TextController extends Controller
             ->whereNull('parent_id') // Только корневые комментарии
             ->orderBy('created_at', 'asc')
             ->get();
+        $comments_count = Comment::with(['user', 'replies.user', 'parent.user'])
+            ->orderBy('created_at', 'asc')
+            ->where('text_id', $text->id) // Фильтр по text_id
+            ->get()
+            ->count();
 
         $isFavorite = auth()->check()
             ? auth()->user()->favorites()->where('text_id', $id)->exists()
             : false;
 
-        return view('texts.show', compact('text', 'comments', 'isFavorite'));
+        return view('texts.show', compact('text', 'comments', 'isFavorite', 'comments_count'));
     }
 
     // Страница создания текста
@@ -148,8 +153,18 @@ class TextController extends Controller
         return redirect()->route('texts.index')->with('success', 'Текст успешно удален!');
     }
 
-    public function parseFile(Request $request): JsonResponse
+    public function parseFile(Request $request)
     {
+        try {
+            // Логика обработки файла
+            $file = $request->file('text_file');
+            
+            // Обработка файла, например, с использованием библиотеки для работы с .docx
+    
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
 
     }
 }

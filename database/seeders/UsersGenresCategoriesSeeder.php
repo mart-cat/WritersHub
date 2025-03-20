@@ -20,7 +20,16 @@ class UsersGenresCategoriesSeeder extends Seeder
             'name' => 'Джон Ватсон',
             'email' => 'john.watson@example.com',
             'password' => Hash::make('password123'),
-            'role' => 'user',
+            'role' => 'editor',
+            'email_verified_at' => now(),
+            'remember_token' => null,
+        ]);
+
+        User::create([
+            'name' => 'Ваш любимый админ',
+            'email' => 'admin@ad.com',
+            'password' => Hash::make('111'),
+            'role' => 'admin',
             'email_verified_at' => now(),
             'remember_token' => null,
         ]);
