@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container">
     <h1>Управление пользователями</h1>
 
     @if(session('success'))
@@ -55,16 +56,12 @@
                                 @endif
                             </div>
 
-                            <!-- Форма для удаления пользователя -->
-                            <form action="{{ route('admin.users.delete', $user->id) }}" method="POST" class="d-inline-block mt-2">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
-                            </form>
+                            
                         </div>
                     </div>
                 </div>
             </div>
         @endforeach
+    </div>
     </div>
 @endsection

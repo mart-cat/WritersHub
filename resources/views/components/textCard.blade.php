@@ -16,7 +16,7 @@
 
         @if ($text->warnings)
             <a href="javascript:void(0);" class="text-blue-500 hover:text-blue-700"
-                onclick="toggleSpoiler({{ $text->id }})">Спойлер</a>
+                onclick="toggleSpoiler({{ $text->id }})">Предупреждения</a>
 
             <div class="spoiler-content mt-2" id="spoiler-content-{{ $text->id }}" style="display: none;">
                 <span class="text-gray-700">{{ $text->warnings }}</span>

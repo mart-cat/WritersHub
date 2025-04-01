@@ -10,7 +10,7 @@
         <div class="slogan">
             <h1>Добро пожаловать на WritersHub!</h1>
             <h5>Платформа для начинающих писателей, где вы можете создавать, делиться и читать произведения.</h5>
-            <a href="{{ route('texts.index') }}" class="btn btn-primary">Посмотреть все тексты</a>
+            
         </div>
     </div>
 
@@ -57,6 +57,8 @@
             @endforeach
         </div>
     </div>
+
+    <a href="{{ route('texts.index') }}" class="btn btn-primary">Посмотреть все тексты</a>
 
     <!-- Кнопка для авторов -->
     @auth
