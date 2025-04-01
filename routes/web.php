@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ChapterController;
 
 // === Гостевые маршруты (без авторизации) ===
 Route::get('/', [HomeController::class, 'index'])->name('home.index'); // Главная страница
@@ -16,6 +17,7 @@ Route::get('/about', [HomeController::class, 'about'])->name('home.about'); // �
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact'); // Контакты
 Route::get('/texts', [TextController::class, 'index'])->name('texts.index'); // Список всех текстов
 Route::get('/texts/{id}', [TextController::class, 'show'])->name('texts.show'); // Просмотр конкретного текста
+Route::get('/chapter/{id}', [ChapterController::class, 'show'])->name('chapter.show');
 Route::get('/profile/{id}', [UserController::class, 'profile'])->name('user.profile'); // Профиль пользователя
 
 // === Маршруты для авторизации ===
