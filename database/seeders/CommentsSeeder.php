@@ -56,21 +56,21 @@ class CommentsSeeder extends Seeder
         ]);
         
         Comment::create([
-            'text_id' => 3,
+            'text_id' => 1,
             'user_id' => 1,
             'content' => 'Спасибо за полезную информацию!',
             'parent_id' => null,
         ]);
         
         Comment::create([
-            'text_id' => 3,
+            'text_id' => 1,
             'user_id' => 2,
             'content' => 'Очень хорошо написано. Всё понятно и по делу.',
             'parent_id' => null,
         ]);
         
         Comment::create([
-            'text_id' => 3,
+            'text_id' => 1,
             'user_id' => 3,
             'content' => 'Интересно! Хотелось бы узнать больше деталей.',
             'parent_id' => null,
