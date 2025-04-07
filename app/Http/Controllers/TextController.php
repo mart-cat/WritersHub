@@ -66,14 +66,11 @@ class TextController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
-            'content' => 'nullable|string',
             'genre_id' => 'required|exists:genres,id',
             'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|string',
             'size' => 'required|string',
-            'char_count' => 'nullable|integer',
-            'chapter_count' => 'nullable|integer',
             'warnings' => 'nullable|string',
             'age_rating' => 'required|string',
             'dedication' => 'nullable|string',
@@ -94,14 +91,11 @@ class TextController extends Controller
         $text = new Text();
         $text->title = $request->title;
         $text->description = $request->description;
-        $text->content = $content;
         $text->genre_id = $request->genre_id;
         $text->category_id = $request->category_id;
         $text->tags = $tags;
         $text->status = $request->status;
         $text->size = $request->size;
-        $text->char_count = $request->char_count;
-        $text->chapter_count = $request->chapter_count;
         $text->warnings = $request->warnings;
         $text->age_rating = $request->age_rating;
         $text->dedication = $request->dedication;
@@ -109,7 +103,7 @@ class TextController extends Controller
         $text->user_id = $request->user_id;
         $text->save();
 
-        return redirect()->route('texts.index')->with('success', 'Текст успешно сохранён!');
+        return back()->with('success', 'Текст успешно сохранён!');
     }
 
 
@@ -119,8 +113,10 @@ class TextController extends Controller
         $text = Text::findOrFail($id);
         $genres = Genre::all();
         $categories = Category::all();
+        
+        $previousChapters = $text->chapters ?? [];
 
-        return view('texts.edit', compact('text', 'genres', 'categories'));
+        return view('texts.create', compact('text', 'genres', 'categories', 'previousChapters'));
     }
 
     // Обновление текста
@@ -131,17 +127,13 @@ class TextController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'content' => 'required|string',
             'genre_id' => 'required|exists:genres,id',
             'category_id' => 'required|exists:categories,id',
         ]);
-
-        $text->update($request->all());
-        $text->char_count = strlen($request->content);
-        $text->chapter_count = substr_count($request->content, '###');
+        
+        $text->update($request->all()); 
         $text->save();
-
-        return redirect()->route('texts.show', $text->id)->with('success', 'Текст успешно обновлен!');
+        return back()->with('success', 'Текст успешно сохранён!');
     }
 
     // Удаление текста
@@ -153,18 +145,5 @@ class TextController extends Controller
         return redirect()->route('texts.index')->with('success', 'Текст успешно удален!');
     }
 
-    public function parseFile(Request $request)
-    {
-        try {
-            // Логика обработки файла
-            $file = $request->file('text_file');
-            
-            // Обработка файла, например, с использованием библиотеки для работы с .docx
-    
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()]);
-        }
 
-    }
 }

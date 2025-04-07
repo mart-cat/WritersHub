@@ -33,6 +33,12 @@
                 <div id="chapter-content">{!! $text->content !!}</div>
             @endforeach
         </div>
+        
+        @auth
+        @if(auth()->id() === $text->user_id)
+                <a href="{{ route('texts.edit', $text->id) }}" class="btn btn-warning">Редактировать</a>
+            @endif
+        @endauth
 
         <div>
             <button id="prev-chapter">Предыдущая глава</button>

@@ -17,7 +17,7 @@ Route::get('/about', [HomeController::class, 'about'])->name('home.about'); // �
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact'); // Контакты
 Route::get('/texts', [TextController::class, 'index'])->name('texts.index'); // Список всех текстов
 Route::get('/texts/{id}', [TextController::class, 'show'])->name('texts.show'); // Просмотр конкретного текста
-Route::get('/chapter/{id}', [ChapterController::class, 'show'])->name('chapter.show');
+Route::get('/chapter/{id}', [ChapterController::class, 'show'])->name('chapter.show');// Просмотр главы
 Route::get('/profile/{id}', [UserController::class, 'profile'])->name('user.profile'); // Профиль пользователя
 
 // === Маршруты для авторизации ===
@@ -48,10 +48,16 @@ Route::middleware('auth')->group(function () {
     // Управление текстами
     Route::post('/text/save', [TextController::class, 'store'])->name('texts.store'); // Сохранение текста
     Route::get('/text/create', [TextController::class, 'create'])->name('texts.create'); // Создание текста
-    Route::post('/parse-file', [TextController::class, 'parseFile'])->name('texts.parseFile'); // Парсинг текста
+    
     Route::get('/text/{id}/edit', [TextController::class, 'edit'])->name('texts.edit'); // Редактирование текста
     Route::put('/text/{id}', [TextController::class, 'update'])->name('texts.update'); // Обновление текста
     Route::delete('/text/{id}', [TextController::class, 'destroy'])->name('texts.destroy'); // Удаление текста
+
+    Route::post('/parse-file', [ChapterController::class, 'parseFile'])->name('texts.parseFile'); // Парсинг текста
+    Route::post('/сhapter/{text_id}/save', [ChapterController::class, 'store'])->name('chapter.store'); // Сохранение главы
+    Route::put('/сhapter/{id}', [ChapterController::class, 'update'])->name('сhapter.update'); // Обновление главы
+    Route::delete('/сhapter/{id}', [ChapterController::class, 'destroy'])->name('сhapter.destroy'); // Удаление главы
+
 
     // Комментарии
     Route::post('/text/{id}/comments', [CommentController::class, 'store'])->name('comments.store'); // Добавление комментария

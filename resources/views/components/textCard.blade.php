@@ -24,6 +24,10 @@
         @endif
         <!-- Проверка на авторизацию и отображение кнопки добавления в избранное -->
         @auth
+            <!-- Редакция -->
+            @if(auth()->id() === $text->user_id)
+                <a href="{{ route('texts.edit', $text->id) }}" class="btn btn-warning">Редактировать</a>
+            @endif
             <!-- Проверяем текущий маршрут и скрываем блок, если не на странице избранного -->
             @if (request()->is('favorites*'))
                 <form action="{{ route('favorites.toggle', $text->id) }}" method="POST" class="d-inline">

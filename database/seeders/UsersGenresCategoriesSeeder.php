@@ -28,7 +28,7 @@ class UsersGenresCategoriesSeeder extends Seeder
         User::create([
             'name' => 'Ваш любимый админ',
             'email' => 'admin@ad.com',
-            'password' => Hash::make('111'),
+            'password' => Hash::make(value: '111'),
             'role' => 'admin',
             'email_verified_at' => now(),
             'remember_token' => null,
