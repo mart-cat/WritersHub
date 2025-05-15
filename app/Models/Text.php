@@ -22,7 +22,7 @@ class Text extends Model
     ];
 
     // Связь с главами
-        public function chapters()
+    public function chapters()
     {
         return $this->hasMany(Chapter::class);
     }
@@ -40,9 +40,9 @@ class Text extends Model
     }
 
     // Связь с категорией
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_text');
     }
 
     // Связь с комментариями

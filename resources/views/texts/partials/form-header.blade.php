@@ -26,16 +26,17 @@
     </div>
 
     <div class="form-group">
-        <label for="category_id">Категория</label>
-        <select id="category_id" name="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
-            @foreach ($categories as $category)
-                <option value="{{ $category->id }}" {{ old('category_id', isset($text) ? $text->category_id : '') == $category->id ? 'selected' : '' }}>
-                    {{ $category->name }}
-                </option>
-            @endforeach
-        </select>
-        @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
-    </div>
+    <label for="category_id">Категории</label>
+    <select id="category_id" name="category_id[]" class="form-control @error('category_id') is-invalid @enderror" multiple required>
+        @foreach ($categories as $category)
+            <option value="{{ $category->id }}" 
+                {{ (collect(old('category_id', isset($text) ? $text->categories->pluck('id')->toArray() : []))->contains($category->id)) ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
+        @endforeach
+    </select>
+    @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+</div>
 
     <div class="form-group">
         <label for="tags">Теги (через запятую)</label>

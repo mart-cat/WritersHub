@@ -10,7 +10,11 @@
             <span>Автор: <a href="{{ route('user.profile', $text->user->id) }}"
                     class="text-blue-600 hover:text-blue-800">{{ $text->user->name }}</a></span>
             <span class="ml-4">Жанр: {{ $text->genre->name }}</span>
-            <span class="ml-4">Категория: {{ $text->category->name }}</span>
+            @if ($text->categories && $text->categories->count())
+                @foreach ($text->categories as $category)
+                    {{ $category->name }}{{ !$loop->last ? ',' : '' }}
+                @endforeach
+            @endif
             <span class="ml-4">Статус: {{ $text->status }}</span>
         </div>
 

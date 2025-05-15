@@ -9,7 +9,13 @@
             <p class="text-muted">
                 <small>Автор: <a href="{{ route('user.profile', $text->user->id) }}">{{ $text->user->name }}</a></small> |
                 <small>Жанр: {{ $text->genre->name }}</small> |
-                <small>Категория: {{ $text->category->name }}</small> |
+                <small>
+                    @if ($text->categories && $text->categories->count())
+                @foreach ($text->categories as $category)
+                    {{ $category->name }}{{ !$loop->last ? ',' : '' }}
+                @endforeach
+                @endif 
+                |</small>
                 <small>Статус: {{ $text->status }}</small> |
                 <small>Последнее обновление: {{ $text->last_updated }}</small>
             </p>

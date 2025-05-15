@@ -12,7 +12,7 @@ class TextController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Text::query();
+        $query = Text::with('categories');
 
         // Фильтр по жанру
         if ($request->has('genre')) {
@@ -21,7 +21,9 @@ class TextController extends Controller
 
         // Фильтр по категории
         if ($request->has('category')) {
-            $query->where('category_id', $request->category);
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->category);
+            });
         }
 
         $texts = $query->paginate(10);
@@ -31,7 +33,7 @@ class TextController extends Controller
     // Просмотр конкретного текста
     public function show($id)
     {
-        $text = Text::with(['user', 'genre', 'category', 'statistics'])->findOrFail($id);
+        $text = Text::with(['user', 'genre', 'categories', 'statistics'])->findOrFail($id);
         $comments = Comment::with(['user', 'replies.user', 'parent.user'])
             ->where('text_id', $text->id) // Фильтр по text_id
             ->whereNull('parent_id') // Только корневые комментарии
@@ -67,7 +69,6 @@ class TextController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'genre_id' => 'required|exists:genres,id',
-            'category_id' => 'required|exists:categories,id',
             'tags' => 'nullable|string',
             'status' => 'required|string',
             'size' => 'required|string',
@@ -92,7 +93,7 @@ class TextController extends Controller
         $text->title = $request->title;
         $text->description = $request->description;
         $text->genre_id = $request->genre_id;
-        $text->category_id = $request->category_id;
+
         $text->tags = $tags;
         $text->status = $request->status;
         $text->size = $request->size;
@@ -102,21 +103,28 @@ class TextController extends Controller
         $text->publication_permission = $request->publication_permission;
         $text->user_id = $request->user_id;
         $text->save();
-
-        return back()->with('success', 'Текст успешно сохранён!');
+        $text->refresh();
+        $text->categories()->sync($request->input('category_id'));
+        return redirect()->route('texts.all.chapters', ['text' => $text->id]);
     }
 
 
     // Страница редактирования текста
-    public function edit($id)
+
+    public function editHeader(Text $text)
     {
-        $text = Text::findOrFail($id);
+        $text->load('categories');
         $genres = Genre::all();
         $categories = Category::all();
-        
-        $previousChapters = $text->chapters ?? [];
 
-        return view('texts.create', compact('text', 'genres', 'categories', 'previousChapters'));
+        return view('texts.edit-header', compact('text', 'genres', 'categories'));
+    }
+
+    public function AllChapters(Text $text)
+    {
+        $previousChapters = $text->chapters()->get();
+
+        return view('texts.all-chapters', compact('text', 'previousChapters'));
     }
 
     // Обновление текста
@@ -128,11 +136,16 @@ class TextController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'genre_id' => 'required|exists:genres,id',
-            'category_id' => 'required|exists:categories,id',
         ]);
-        
-        $text->update($request->all()); 
-        $text->save();
+
+        $text->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'genre_id' => $request->genre_id,
+        ]);
+
+        // Сохраняем категории
+        $text->categories()->sync($request->input('category_id'));
         return back()->with('success', 'Текст успешно сохранён!');
     }
 
@@ -144,6 +157,63 @@ class TextController extends Controller
 
         return redirect()->route('texts.index')->with('success', 'Текст успешно удален!');
     }
+
+    public function filter(Request $request)
+    {
+        $categories = $request->input('category', []);
+        $genreId = $request->input('genre');
+    
+        // Тексты с полным совпадением всех выбранных категорий
+        $fullMatchQuery = Text::query();
+    
+        if ($genreId) {
+            $fullMatchQuery->where('genre_id', $genreId);
+        }
+    
+        if ($categories) {
+            $fullMatchQuery->whereHas('categories', function ($q) use ($categories) {
+                $q->select('category_text.text_id')
+                  ->whereIn('categories.id', $categories)
+                  ->groupBy('category_text.text_id')
+                  ->havingRaw('COUNT(DISTINCT categories.id) = ?', [count($categories)]);
+            });
+        }
+    
+        $fullMatches = $fullMatchQuery->get();
+    
+        // Получаем IDs текстов, которые уже полные совпадения
+        $fullMatchIds = $fullMatches->pluck('id')->toArray();
+    
+        // Теперь частичные совпадения (если текст уже в полном совпадении — пропускаем его)
+        $partialMatchQuery = Text::query();
+    
+        if ($genreId) {
+            $partialMatchQuery->where('genre_id', $genreId);
+        }
+    
+        if ($categories) {
+            $partialMatchQuery->whereHas('categories', function ($q) use ($categories) {
+                $q->whereIn('categories.id', $categories);
+            });
+    
+            if (!empty($fullMatchIds)) {
+                $partialMatchQuery->whereNotIn('id', $fullMatchIds);
+            }
+        }
+    
+        $partialMatches = $partialMatchQuery->get();
+    
+        // Теперь объединяем полные и частичные
+        $texts = $fullMatches->merge($partialMatches);
+    
+        $genres = Genre::all();
+        $categories = Category::all();
+    
+        return view('texts.index', compact('texts', 'genres', 'categories'));
+    }
+    
+    
+
 
 
 }

@@ -44,28 +44,27 @@
         }
     });
 
-    document.getElementById('edit_docx').addEventListener('click', function () {
-        document.getElementById('text_container').style.display = 'block';
-        this.style.display = 'none';
-        document.getElementById('content').setAttribute('required', 'true');
+document.addEventListener('DOMContentLoaded', function () {
+    const chapterItems = document.querySelectorAll('.chapter-item');
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const form = document.getElementById('chapter-form');
+    const methodInput = document.getElementById('form-method');
+    const chapterIdInput = document.getElementById('chapter_id');
+
+    chapterItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const chapterId = item.dataset.id;
+            const title = item.dataset.title;
+            const content = item.dataset.content;
+
+            titleInput.value = title;
+            contentInput.value = content;
+
+            form.action = `/сhapter/${chapterId}`;
+            methodInput.value = 'PUT';
+            chapterIdInput.value = chapterId;
+        });
     });
-
-    function switchTab(tab) {
-        const headerTab = document.getElementById('form-header');
-        const chaptersTab = document.getElementById('form-chapters');
-        const tabHeaderBtn = document.getElementById('tab-header');
-        const tabChaptersBtn = document.getElementById('tab-chapters');
-
-        if (tab === 'header') {
-            headerTab.style.display = 'block';
-            chaptersTab.style.display = 'none';
-            tabHeaderBtn.classList.add('active');
-            tabChaptersBtn.classList.remove('active');
-        } else {
-            headerTab.style.display = 'none';
-            chaptersTab.style.display = 'block';
-            tabHeaderBtn.classList.remove('active');
-            tabChaptersBtn.classList.add('active');
-        }
-    }
+});
 </script>
