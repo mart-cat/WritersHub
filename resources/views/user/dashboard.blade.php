@@ -31,7 +31,7 @@
                     <h3>Ваши подписки</h3>
                     <ul>
                         @foreach(auth()->user()->subscriptions as $subscription)
-                            <li><a href="{{ route('user.profile', $subscription->id) }}">{{ $subscription->name }}</a></li>
+                            <li><a href="{{ route('user.profile', $subscription->author_id) }}">{{ $subscription->author->name }}</a></li>
                         @endforeach
                     </ul>
                 </div>

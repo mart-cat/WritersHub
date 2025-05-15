@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('genres', function (Blueprint $table) {
+        Schema::create('category_text', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedInteger('texts_count')->default(0); // Cчетчик текстов
+            $table->foreignId('text_id')->constrained('texts')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->timestamps();
         });
+        
     }
 
     /**
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('genres');
+        //
     }
 };

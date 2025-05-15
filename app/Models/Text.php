@@ -10,20 +10,22 @@ class Text extends Model
         'user_id',
         'title',
         'description',
-        'content',
         'genre_id',
         'category_id',
         'tags',
         'status',
         'size',
-        'char_count',
-        'chapter_count',
         'warnings',
         'age_rating',
         'dedication',
         'publication_permission',
-        'last_updated',
     ];
+
+    // Связь с главами
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class);
+    }
 
     // Связь с пользователем (автор текста)
     public function user()
@@ -38,9 +40,9 @@ class Text extends Model
     }
 
     // Связь с категорией
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_text');
     }
 
     // Связь с комментариями

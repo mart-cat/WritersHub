@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ChapterController;
 
 // === Гостевые маршруты (без авторизации) ===
 Route::get('/', [HomeController::class, 'index'])->name('home.index'); // Главная страница
@@ -16,6 +17,8 @@ Route::get('/about', [HomeController::class, 'about'])->name('home.about'); // �
 Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact'); // Контакты
 Route::get('/texts', [TextController::class, 'index'])->name('texts.index'); // Список всех текстов
 Route::get('/texts/{id}', [TextController::class, 'show'])->name('texts.show'); // Просмотр конкретного текста
+Route::get('/texts/filter/new', [TextController::class, 'filter'])->name('texts.filter');  // Фильтр текста
+Route::get('/chapter/{id}', [ChapterController::class, 'show'])->name('chapter.show');// Просмотр главы
 Route::get('/profile/{id}', [UserController::class, 'profile'])->name('user.profile'); // Профиль пользователя
 
 // === Маршруты для авторизации ===
@@ -44,12 +47,25 @@ Route::middleware('auth')->group(function () {
 
 
     // Управление текстами
-    Route::post('/text/save', [TextController::class, 'store'])->name('texts.store'); // Сохранение текста
-    Route::get('/text/create', [TextController::class, 'create'])->name('texts.create'); // Создание текста
-    Route::post('/parse-file', [TextController::class, 'parseFile'])->name('texts.parseFile'); // Парсинг текста
-    Route::get('/text/{id}/edit', [TextController::class, 'edit'])->name('texts.edit'); // Редактирование текста
-    Route::put('/text/{id}', [TextController::class, 'update'])->name('texts.update'); // Обновление текста
-    Route::delete('/text/{id}', [TextController::class, 'destroy'])->name('texts.destroy'); // Удаление текста
+    Route::get('/text/create', [TextController::class, 'create'])->name('texts.create');
+    Route::post('/text/save', [TextController::class, 'store'])->name(name: 'texts.store');
+
+    Route::get('/text/{text}/edit/header', [TextController::class, 'editHeader'])->name('texts.edit');
+    Route::get('/text/{text}/all/chapters', [TextController::class, 'AllChapters'])->name('texts.all.chapters');
+
+    Route::put('/text/{text}', [TextController::class, 'update'])->name('texts.update');
+    Route::delete('/text/{text}', [TextController::class, 'destroy'])->name('texts.destroy');
+
+    // Управление главами
+    Route::post('/сhapter/{text_id}/save/{chapter_id?}', [ChapterController::class, 'store'])->name('chapter.store'); //Сохранить
+    Route::get('/сhapter/{text_id}/create/{chapter_id?}', [ChapterController::class, 'save'])->name('chapter.save'); //Форма
+    Route::put('/сhapter/{id}', [ChapterController::class, 'update'])->name('сhapter.update');
+    Route::delete('/сhapter/{id}', [ChapterController::class, 'destroy'])->name('сhapter.destroy');
+
+    // Парсинг DOCX/TXT файлов
+    Route::post('/parse-file', [ChapterController::class, 'parseFile'])->name('texts.parseFile');
+
+
 
     // Комментарии
     Route::post('/text/{id}/comments', [CommentController::class, 'store'])->name('comments.store'); // Добавление комментария
@@ -60,10 +76,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/text/{id}/favorite', [FavoriteController::class, 'destroy'])->name('favorites.destroy'); // Убрать из избранного
     Route::delete('/text/{id}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle'); // Переключатель избранное
 
-    // Подписки 🚧 Этот блок пока в разработке! 🚧
+    // Подписки 
     Route::post('/authors/{id}/subscribe', [SubscriptionController::class, 'store'])->name('subscriptions.store'); // Подписаться на автора
     Route::delete('/authors/{id}/unsubscribe', [SubscriptionController::class, 'destroy'])->name('subscriptions.destroy'); // Отписаться от автора
-    Route::delete('/authors/{id}/toggle', [SubscriptionController::class, 'toggle'])->name('subscriptions.toggle'); // Переключатель избранное
+    Route::post('/authors/{id}/toggle', [SubscriptionController::class, 'toggle'])->name('subscriptions.toggle');
+
 
     // Рейтинг 🚧 Этот блок пока в разработке! 🚧
     Route::post('/authors/{id}/ratings', [SubscriptionController::class, 'store'])->name('ratings.store'); // Подписаться на автора

@@ -15,20 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
-            $table->text('description');
-            $table->longText('content');
             $table->foreignId('genre_id')->constrained('genres')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->text('description');
             $table->json('tags')->nullable();
             $table->enum('status', ['in progress', 'completed', 'frozen'])->default('in progress');
             $table->enum('size', ['mini', 'standard', 'maxi']);
-            $table->integer('char_count');
-            $table->integer('chapter_count');
             $table->text('warnings')->nullable();
             $table->string('age_rating')->default('0+');
             $table->string('dedication')->nullable();
             $table->enum('publication_permission', ['allowed', 'forbidden', 'author_only'])->default('author_only');
-            $table->timestamp('last_updated')->useCurrent();
             $table->timestamps();
         });
     }
