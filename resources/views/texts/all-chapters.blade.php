@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Просмотр глав</h1>
+    <x-back page="Просмотр глав" />
 
     <div class="card p-3">
         {{-- Вкладки --}}

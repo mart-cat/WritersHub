@@ -1,19 +1,27 @@
-<div class="mb-3 comment-container" data-comment-id="{{ $comment->id }}">
-    <p class="mb-1">
-        <strong>
-            <a href="{{ route('user.profile', $comment->user->id) }}">{{ $comment->user->name }}</a>
-        </strong>
-        <small class="text-muted">{{ $comment->created_at->format('d.m.Y H:i') }}</small>
-    </p>
-    <p>{{ $comment->content }}</p>
+<div class="mb-4 p-4 border border-gray-300 rounded bg-comment comment-container" data-comment-id="{{ $comment->id }}">
+    <div class="flex justify-between items-center mb-2">
+        <div class="text-sm">
+            <a href="{{ route('user.profile', $comment->user->id) }}" class="font-semibold hover:underline">
+                {{ $comment->user->name }}
+            </a>
+            <span class="text-xs ml-2">{{ $comment->created_at->format('d.m.Y H:i') }}</span>
+        </div>
+    </div>
+
+    <p class="whitespace-pre-line">{{ $comment->content }}</p>
 
     @auth
-        <a href="javascript:void(0);" class="reply-btn text-primary" data-comment-id="{{ $comment->id }}" data-user-name="{{ $comment->user->name }}">Ответить</a>
-        <div class="reply-form-container"></div>
+        <a href="javascript:void(0);" 
+           class="reply-btn inline-block mt-2 text-sm hover:underline" 
+           data-comment-id="{{ $comment->id }}" 
+           data-user-name="{{ $comment->user->name }}">
+            Ответить
+        </a>
+        <div class="reply-form-container mt-2"></div>
     @endauth
 
     @if ($comment->replies->isNotEmpty())
-        <div class="ms-4 mt-2 comment-reply">
+        <div class="ml-4 border-l-2 border-gray-300 pl-4 mt-4 space-y-3 comment-reply">
             @foreach ($comment->replies as $reply)
                 @include('partials.comment', ['comment' => $reply])
             @endforeach

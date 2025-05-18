@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto">
-        <h1 class="text-4xl font-semibold mb-6">Мои избранные тексты</h1>
+    <div class="container mx-auto mt-20 ">
+
+        <x-back page="Мои избранные тексты" />
 
         @if ($texts->isEmpty())
             <p class="text-lg text-gray-600">У вас нет избранных текстов.</p>

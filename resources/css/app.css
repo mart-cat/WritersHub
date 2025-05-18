@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+h1, h2, h3 {
+  @apply font-orelega;
+  @apply tracking-[3px];
+  @apply text-[#7e4620]
+}
+
+p, label {
+  @apply font-nunito;
+  @apply text-[#6b3f1d];
+  @apply text-lg
+
+}
+ 
+a{
+  @apply text-[#6b3f1d];
+}
+button{
+    @apply bg-[#a4532c];
+    @apply text-white;
+    @apply px-6;
+    @apply py-2 rounded;
+    @apply hover:bg-[#873b1c]
+}

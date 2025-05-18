@@ -1,67 +1,39 @@
-@props(['text', 'isFavorite'])
-<div class="card mb-4">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h3 class="text-2xl font-semibold mb-4">
-            <a href="{{ route('texts.show', $text->id) }}"
-                class="text-orange-600 hover:text-orange-800">{{ $text->title }}</a>
-        </h3>
-        <p class="text-gray-600 mb-4">{{ $text->description }}</p>
-        <div class="text-sm text-gray-500 mb-4">
-            <span>Автор: <a href="{{ route('user.profile', $text->user->id) }}"
-                    class="text-blue-600 hover:text-blue-800">{{ $text->user->name }}</a></span>
-            <span class="ml-4">Жанр: {{ $text->genre->name }}</span>
-            @if ($text->categories && $text->categories->count())
-                @foreach ($text->categories as $category)
-                    {{ $category->name }}{{ !$loop->last ? ',' : '' }}
-                @endforeach
-            @endif
-            <span class="ml-4">Статус: {{ $text->status }}</span>
-        </div>
+@props(['text'])
 
-        @if ($text->warnings)
-            <a href="javascript:void(0);" class="text-blue-500 hover:text-blue-700"
-                onclick="toggleSpoiler({{ $text->id }})">Предупреждения</a>
 
-            <div class="spoiler-content mt-2" id="spoiler-content-{{ $text->id }}" style="display: none;">
-                <span class="text-gray-700">{{ $text->warnings }}</span>
-            </div>
+<div class=" p-4 border border-[#c49a6c] rounded-md">
+    <h2 class="text-xl mb-2 flex items-center gap-2">
+        <a href="{{ route('texts.show', $text->id) }}" class="hover:underline">{{ $text->title }}</a>
+
+        @if ($text->age_rating && $text->age_rating !== '0+')
+             <p><span class="text-xs px-1.5 py-0.5 rounded bg-orange-700 text-white">{{ $text->age_rating }}</span></p>
         @endif
-        <!-- Проверка на авторизацию и отображение кнопки добавления в избранное -->
-        @auth
-            <!-- Редакция -->
-            @if(auth()->id() === $text->user_id)
-                <a href="{{ route('texts.edit', $text->id) }}" class="btn btn-warning">Редактировать</a>
-            @endif
-            <!-- Проверяем текущий маршрут и скрываем блок, если не на странице избранного -->
-            @if (request()->is('favorites*'))
-                <form action="{{ route('favorites.toggle', $text->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">
-                        @if ($text->isFavorite)
-                            Убрать из избранного
-                        @else
-                            Добавить в избранное
-                        @endif
-                    </button>
-                </form>
-            @endif
-        @endauth
+    </h2>
+
+    <div class="text-sm mb-2 flex items-center gap-2">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-6 8a6 6 0 0112 0H4z" />
+        </svg>
+        <a href="{{ route('user.profile', $text->user->id) }}" class="hover:underline">
+            {{ $text->user->name }}
+        </a>
     </div>
+
+    <div class="mb-3">
+        @include('components.tags', ['text' => $text])
+    </div>
+
+    <p class="mb-4 text-sm">
+        {{ $text->description }}
+    </p>
+
+    @if ($text->categories && $text->categories->count())
+        <div class="flex flex-wrap gap-2">
+            @foreach ($text->categories as $category)
+                <span class="inline-block text-xs px-2 py-1 rounded bg-[#BD7835] text-white">
+                    {{ $category->name }}
+                </span>
+            @endforeach
+        </div>
+    @endif
 </div>
-
-<script>
-    function toggleSpoiler(textId) {
-        var spoilerContent = document.getElementById('spoiler-content-' + textId);
-        var spoilerButton = document.querySelector('a[onclick="toggleSpoiler(' + textId + ')"]');
-
-        // Переключаем видимость спойлера
-        if (spoilerContent.style.display === 'none') {
-            spoilerContent.style.display = 'block'; // показываем спойлер
-            spoilerButton.textContent = 'Скрыть предупреждения'; // меняем текст кнопки
-        } else {
-            spoilerContent.style.display = 'none'; // скрываем спойлер
-            spoilerButton.textContent = 'Предупреждения'; // возвращаем текст
-        }
-    }
-</script>

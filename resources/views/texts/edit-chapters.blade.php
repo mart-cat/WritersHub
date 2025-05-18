@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Редактирование шапки</h1>
+     <x-back page="Редактирование шапки" />
 
     <div class="card p-3">
         {{-- Вкладки --}}

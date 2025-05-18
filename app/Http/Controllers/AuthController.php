@@ -56,7 +56,7 @@ class AuthController extends Controller
     
         // Получаем пользователя по email
         $user = User::where('email', $request->email)->first();
-    
+
         // Если пользователь не найден
         if (!$user) {
             return Response::json(['error' => 'Пользователь не найден'], 404);
@@ -80,7 +80,7 @@ class AuthController extends Controller
     
         // Попытка входа в систему
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return Response::json(['error' => 'Invalid credentials'], 401);
+            return Response::json(['error' => 'Неправельный пароль или email'], 401);
         }
     
         // Генерация 2FA кода

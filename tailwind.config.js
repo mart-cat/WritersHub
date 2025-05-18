@@ -13,6 +13,15 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                orelega: ['"Orelega One"', 'cursive'], // добавили под псевдонимом orelega
+                nunito: ['"Nunito"', 'bold'],
+            },
+            colors: {
+                normal: '#7e4620',   
+                action: '#a4532c',    // кнопки
+                actionHover: '#873b1c',
+                borderGold: '#c49a6c', // рамки и элементы интерфейса
+                comment: '#F6F1E0'
             },
         },
     },

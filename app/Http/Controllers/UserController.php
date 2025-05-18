@@ -21,27 +21,36 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         return view('user.profile', compact('user'));
+        
     }
 
     // Метод для обновления основных данных пользователя
     public function update(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Валидация данных
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-        ]);
+    $request->validate([
+        'name'  => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+    ], [
+        'name.required'  => 'Пожалуйста, укажите имя.',
+        'name.string'    => 'Имя должно быть строкой.',
+        'name.max'       => 'Имя не должно превышать 255 символов.',
 
-        // Обновление данных пользователя
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->save();
+        'email.required' => 'Пожалуйста, укажите email.',
+        'email.email'    => 'Введите корректный email-адрес.',
+        'email.unique'   => 'Такой email уже используется другим пользователем.',
+    ]);
 
-        // Редирект на профиль с передачей ID
-        return redirect()->route('user.profile.edit', ['id' => $user->id])->with('success', 'Профиль обновлен');
-    }
+    $user->name  = $request->name;
+    $user->email = $request->email;
+    $user->save();
+
+    return redirect()
+        ->route('user.profile.edit', ['id' => $user->id])
+        ->with('success', 'Профиль успешно обновлён.');
+}
+
 
     public function edit($id)
     {
