@@ -107,6 +107,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/genres', [AdminController::class, 'manageGenres'])->name('admin.genres');
     Route::post('/genres', [AdminController::class, 'storeGenre'])->name('admin.genres.store');
     Route::delete('/genres/{id}', [AdminController::class, 'deleteGenre'])->name('admin.genres.delete');
+
+    Route::get('/admin/texts/', [AdminController::class, 'showTexts'])->name('admin.texts');
+    Route::delete('/admin/texts/{text}', [AdminController::class, 'deleteTexts'])->name('admin.delete');
+
+
 //});
 
 

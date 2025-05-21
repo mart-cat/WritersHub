@@ -24,9 +24,9 @@
     @include('partials.alerts')
 
     {{-- Основной контент --}}
-    <main class="flex-grow max-w-6xl w-full mx-auto">
-        @yield('content')
-    </main>
+<main class="flex-grow max-w-6xl w-full mx-auto ">
+    @yield('content')
+</main>
 
     {{-- Футер --}}
     @include('partials.footer')

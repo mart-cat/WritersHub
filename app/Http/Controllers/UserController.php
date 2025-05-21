@@ -18,8 +18,13 @@ class UserController extends Controller
 
     // Профиль пользователя
     public function profile($id)
-    {
+    { 
+       
         $user = User::findOrFail($id);
+        
+         if (Auth::check() && Auth::id() === $user->id) {
+        return redirect()->route('user.dashboard');
+        }
         return view('user.profile', compact('user'));
         
     }

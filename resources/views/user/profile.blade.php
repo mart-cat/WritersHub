@@ -28,7 +28,7 @@
             <!-- Боковая панель -->
             <div class="md:col-span-1">
                 @auth
-                    <form action="{{ route('subscriptions.toggle', $user->id) }}" method="POST" class="bg-white border border-yellow-700 rounded p-4">
+                    <form action="{{ route('subscriptions.toggle', $user->id) }}" method="POST" class="">
                         @csrf
                         <button type="submit" class="w-full px-4 py-2 rounded text-white font-semibold
                             {{ auth()->user()->subscriptions->where('author_id', $user->id)->count() ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }}">

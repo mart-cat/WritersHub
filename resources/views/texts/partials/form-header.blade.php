@@ -3,7 +3,7 @@
 @endphp
 
 <div class="tab-pane fade show active space-y-6" role="tabpanel" id="form-header">
-
+     
     <div class="space-y-2">
         <label for="title" class="font-semibold">Название</label>
         <input type="text" id="title" name="title"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Text;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -13,6 +14,42 @@ class AdminController extends Controller
 {
     return view('admin.dashboard');
 }
+// === КАТЕГОРИИ ===
+
+public function showTexts(Request $request)
+{
+    $texts = Text::query()
+        ->with(['user', 'genre'])
+        ->when($request->author, fn($q) =>
+            $q->whereHas('user', fn($q) =>
+                $q->where('name', 'like', "%{$request->author}%")
+                   ->orWhere('email', 'like', "%{$request->author}%")
+            )
+        )
+        ->when($request->title, fn($q) =>
+            $q->where('title', 'like', "%{$request->title}%")
+        )
+        ->when($request->genre, fn($q) =>
+            $q->where('genre_id', $request->genre)
+        )
+        ->when($request->status, fn($q) =>
+            $q->where('status', $request->status)
+        )
+        ->orderByDesc('created_at')
+        ->paginate(20);
+
+    $genres = Genre::all();
+
+    return view('admin.texts.index', compact('texts', 'genres'));
+}
+
+public function deleteTexts(Text $text)
+{
+    $text->delete();
+
+    return back()->with('success', 'Текст успешно удалён.');
+}
+
 
 // === КАТЕГОРИИ ===
 public function manageCategories()

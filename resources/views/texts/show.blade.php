@@ -74,7 +74,7 @@
 
     <!-- Содержание -->
 
-    <div class="mb-8 text-[20px]">
+    <div class="mb-8 text-[20px] px-4">
         <h3 class="mb-1 text-center">Содержание</h3>
 
         @if ($text->chapters->count() === 0)
@@ -125,7 +125,7 @@
 
 
     <!-- Комментарии -->
-    <div class="mt-5">
+    <div class="mt-5 px-4">
         <h3 class=" mb-4 text-[20px]">Комментарии ({{ $comments_count }})</h3>
 
         @auth

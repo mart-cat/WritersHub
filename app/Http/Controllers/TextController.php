@@ -130,19 +130,31 @@ class TextController extends Controller
     // Обновление текста
     public function update(Request $request, $id)
     {
+
         $text = Text::findOrFail($id);
 
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'genre_id' => 'required|exists:genres,id',
+            'category_id' => 'required|array|min:1',
+            'status' => 'required|in:in progress,completed,frozen',
+            'size' => 'required|in:mini,standard,maxi',
+            'publication_permission' => 'required|in:author_only,allowed,forbidden',
         ]);
 
-        $text->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'genre_id' => $request->genre_id,
-        ]);
+        $text->update($request->only([
+            'title',
+            'description',
+            'genre_id',
+            'status',
+            'size',
+            'tags',
+            'warnings',
+            'age_rating',
+            'dedication',
+            'publication_permission',
+        ]));
 
         // Сохраняем категории
         $text->categories()->sync($request->input('category_id'));
@@ -160,59 +172,105 @@ class TextController extends Controller
 
     public function filter(Request $request)
     {
-        $categories = $request->input('category', []);
         $genreId = $request->input('genre');
-    
-        // Тексты с полным совпадением всех выбранных категорий
+        $selectedStatusRu = $request->input('status', []);
+        $selectedSizeRu = $request->input('size', []);
+        $categories = $request->input('category', []);
+
+        // Маппинг статусов и размеров
+        $statusMap = [
+            'Заморожен' => 'frozen',
+            'В процессе' => 'in progress',
+            'Завершен' => 'completed',
+        ];
+
+        $sizeMap = [
+            'Мини' => 'mini',
+            'Миди' => 'midi',
+            'Макси' => 'maxi',
+        ];
+
+        // Переводим русский ввод в значения из базы
+        $statuses = collect($selectedStatusRu)
+            ->map(fn($ru) => $statusMap[$ru] ?? null)
+            ->filter()
+            ->values()
+            ->toArray();
+
+        $sizes = collect($selectedSizeRu)
+            ->map(fn($ru) => $sizeMap[$ru] ?? null)
+            ->filter()
+            ->values()
+            ->toArray();
+
+        // Запрос на полное совпадение всех категорий
         $fullMatchQuery = Text::query();
-    
+
         if ($genreId) {
             $fullMatchQuery->where('genre_id', $genreId);
         }
-    
-        if ($categories) {
-            $fullMatchQuery->whereHas('categories', function ($q) use ($categories) {
-                $q->select('category_text.text_id')
-                  ->whereIn('categories.id', $categories)
-                  ->groupBy('category_text.text_id')
-                  ->havingRaw('COUNT(DISTINCT categories.id) = ?', [count($categories)]);
-            });
+
+        if (!empty($statuses)) {
+            $fullMatchQuery->whereIn('status', $statuses);
         }
-    
+
+        if (!empty($sizes)) {
+            $fullMatchQuery->whereIn('size', $sizes);
+        }
+
+        if (!empty($categories)) {
+            $fullMatchQuery->whereHas('categories', function ($q) use ($categories) {
+                $q->whereIn('categories.id', $categories);
+            }, '=', count($categories));
+        }
+
         $fullMatches = $fullMatchQuery->get();
-    
-        // Получаем IDs текстов, которые уже полные совпадения
         $fullMatchIds = $fullMatches->pluck('id')->toArray();
-    
-        // Теперь частичные совпадения (если текст уже в полном совпадении — пропускаем его)
+
+        // Частичные совпадения, исключая полные
         $partialMatchQuery = Text::query();
-    
+
         if ($genreId) {
             $partialMatchQuery->where('genre_id', $genreId);
         }
-    
-        if ($categories) {
+
+        if (!empty($statuses)) {
+            $partialMatchQuery->whereIn('status', $statuses);
+        }
+
+        if (!empty($sizes)) {
+            $partialMatchQuery->whereIn('size', $sizes);
+        }
+
+        if (!empty($categories)) {
             $partialMatchQuery->whereHas('categories', function ($q) use ($categories) {
                 $q->whereIn('categories.id', $categories);
             });
-    
+
             if (!empty($fullMatchIds)) {
                 $partialMatchQuery->whereNotIn('id', $fullMatchIds);
             }
         }
-    
+
         $partialMatches = $partialMatchQuery->get();
-    
-        // Теперь объединяем полные и частичные
+
+        // Объединяем оба результата
         $texts = $fullMatches->merge($partialMatches);
-    
+
+        // Передача данных для фильтров
         $genres = Genre::all();
-        $categories = Category::all();
-    
-        return view('texts.index', compact('texts', 'genres', 'categories'));
+        $categoriesList = Category::all();
+
+        return view('texts.index', [
+            'texts' => $texts,
+            'genres' => $genres,
+            'categories' => $categoriesList,
+        ]);
     }
-    
-    
+
+
+
+
 
 
 

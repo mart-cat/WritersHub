@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container">
-    <x-back page="Создание нового текста" />
+    <x-back page="Создание текста" />
 
     <div class="card p-3">
         <form action="{{ route('texts.store') }}" method="POST" enctype="multipart/form-data">

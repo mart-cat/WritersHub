@@ -4,14 +4,15 @@
 
 @section('content')
 
-<div class="relative w-full">
+<div class="relative w-full ">
   <!-- Фон с охватом всей ширины + под шапкой -->
-<div class="absolute inset-0 z-0 bg-no-repeat bg-top"
-     style="background-image: url('/images/Backround-first-page.png'); background-size: 100% auto;"></div>
+<div class="absolute inset-0 z-0  bg-no-repeat bg-top bg-cover"
+     style="background-image: url('/images/Backround-first-page.png');">
+</div>
 
 
   <!-- Контейнер с контентом -->
-  <div class="relative z-10 max-w-7xl mx-auto min-h-[760px] flex flex-col justify-center items-center text-center px-4 pt-32">
+  <div class="relative z-10 max-w-7xl mx-auto min-h-[760px] flex flex-col items-center text-center px-4 pt-32">
     <h1 class="text-[128px] mb-0">ПЕРО</h1>
     <h2 class="text-5xl mb-6">раскрывает новые миры</h2>
     <p class="max-w-2xl text-lg font-bold text-[#5a3d2b]">
@@ -21,11 +22,8 @@
     </p>
   </div>
 </div>
-
-
-
    
-    <div class="py-12">
+    <div class="py-12 px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h3 class="text-2xl mb-6">Найдите то что интересует именно вас</h3>
             <form action="{{ route('texts.filter') }}" method="GET"
@@ -43,7 +41,7 @@
     </div>
 
 
-    <div class="py-12">
+    <div class="py-12 px-4">
         <div class="max-w-3xl mx-auto text-center">
             <h3 class="text-2xl mb-4">О проекте</h3>
             <p class=" leading-relaxed text-justify">
@@ -57,7 +55,7 @@
     </div>
 
 
-    <div class="py-12">
+    <div class="py-12 px-4">
         <div class="max-w-3xl mx-auto">
             <h3 class="text-2xl text-primary text-center mb-4">Как начать?</h3>
             <ol class="list-decimal list-inside space-y-2 text-lg text-normal">
@@ -70,7 +68,7 @@
         </div>
     </div>
 
-    <div class="py-12">
+    <div class="py-12 px-4">
         <div class="max-w-3xl mx-auto">
             <h3 class="text-2xl text-[#6b3f1d] text-center mb-4">Правила проекта:</h3>
             <div class="text-[#5a3d2b] space-y-4">
